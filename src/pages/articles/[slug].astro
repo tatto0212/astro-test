@@ -1,0 +1,35 @@
+---
+import Layout from '../../layouts/Base.astro'
+import { newtClient } from '../../lib/newt'
+import type { Article } from '../../lib/newt'
+
+
+// スラッグを使ってページの内容を作成する
+// URLのパラメータが指定されたときに動くプログラム
+export const getStaticPaths = async () => {
+  const { items: articles } = await newtClient.getContents<Article>({
+    appUid: 'blog',
+    modelUid: 'article',
+    query: {
+      select: ['title', 'slug', 'body'],
+    },
+  })
+
+  // articles.slugとURLで指定されているslugが一致するものだけを取得
+  return articles.map((article) => ({
+    params: { slug: article.slug},
+    // 取得したarticleをpropsという仕組みを使って外に出せる
+    props: { article },
+  }))
+}
+
+// 出したpropsをAstro.propsという仕組みで受け取る
+const { article } = Astro.props
+---
+
+<Layout title="Article">
+  <h1>{article.title}</h1>
+  <!-- 通常はHTMLタグはエスケープされてそのまま画面に表示 -->
+  <!-- 信頼性があってHTMLのタグをそのまま解釈して表示していいのであれば"set:html="をつける -->
+  <article set:html={article.body}/>
+</Layout>
