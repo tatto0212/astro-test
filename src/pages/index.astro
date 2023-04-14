@@ -5,11 +5,23 @@ import Pagination from "@layouts/components/Pagination.astro";
 import Posts from "@layouts/Posts.astro";
 import { getSinglePage } from "@lib/contentParser.astro";
 import { sortByDate } from "@lib/utils/sortFunctions";
+// 追加
+import { newtClient } from '../lib/newt'
+import type { Article } from '../lib/newt'
+// 追加--
 
 const posts = await getSinglePage("posts");
 const sortedPosts = sortByDate(posts);
 const totalPages = Math.ceil(posts.length / config.settings.pagination);
 const currentPosts = sortedPosts.slice(0, config.settings.pagination);
+// 追加
+const { items: articles } = await newtClient.getContents<Article>({
+  appUid: 'blog',
+  modelUid: 'article',
+  query: {
+    select: ['title', 'slug', 'body'],
+  },
+})
 ---
 
 <Base>
@@ -20,4 +32,20 @@ const currentPosts = sortedPosts.slice(0, config.settings.pagination);
       <Posts posts={currentPosts} className="mb-16" />
     </div>
   </section>
+
+  <h1>Blog</h1>
+  <main>
+    <ul>
+      {
+        articles.map((article) => {
+          return (
+            <li>
+              <a href={`/articles/${article.slug}`}>{article.title}</a>
+            </li>
+          )
+        })
+      }
+    </ul>
+  </main>
+
 </Base>
