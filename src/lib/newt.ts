@@ -1,3 +1,5 @@
+// newt-client-jsを初期化するための処理を書いたファイル
+
 import { createClient } from 'newt-client-js'
 
 export interface Article {
