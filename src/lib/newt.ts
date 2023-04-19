@@ -13,3 +13,4 @@ export const newtClient = createClient({
   token: import.meta.env.NEWT_CDN_API_TOKEN,
   apiType: 'cdn',
 })
+
