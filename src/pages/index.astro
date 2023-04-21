@@ -1,6 +1,6 @@
 ---
 import config from "@config/config.json";
-import Base from "@layouts/Base.astro";
+import Layout from "@layouts/Base.astro";
 import Pagination from "@layouts/components/Pagination.astro";
 import Posts from "@layouts/Posts.astro";
 import { getSinglePage } from "@lib/contentParser.astro";
@@ -19,12 +19,12 @@ const { items: articles } = await newtClient.getContents<Article>({
   appUid: 'blog',
   modelUid: 'article',
   query: {
-    select: ['title', 'slug', 'body'],
+    select: ['title','slug', 'body'],
   },
 })
 ---
 
-<Base title="top-page">
+<Layout title="top-page">
   <section class="section">
     <div class="container">
       <Posts posts={currentPosts} className="mb-16" />
@@ -48,4 +48,4 @@ const { items: articles } = await newtClient.getContents<Article>({
     </ul>
   </main>
 
-</Base>
+</Layout>
